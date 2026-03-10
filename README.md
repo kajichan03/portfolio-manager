@@ -95,13 +95,13 @@ git clone https://github.com/kajichan03/portfolio-manager.git
 # 2. 部署到主 Agent workspace
 ln -s ~/projects/portfolio-manager/output ~/.openclaw/workspace/output
 
-# 3. 创建 Skill 入口
-cp ~/projects/portfolio-manager/output/docs/skill.py ~/.openclaw/workspace/
-cp ~/projects/portfolio-manager/output/docs/SKILL.md ~/.openclaw/workspace/
+# 3. 创建标准 Skill 结构
+mkdir -p ~/.openclaw/workspace/skills/portfolio
+cp ~/projects/portfolio-manager/output/docs/SKILL.md ~/.openclaw/workspace/skills/portfolio/
+cp ~/projects/portfolio-manager/output/docs/handlers.py ~/.openclaw/workspace/skills/portfolio/
 
-# 4. 配置
-cd ~/.openclaw/workspace
-python skill.py "状态"
+# 4. 测试
+# 现在可以在对话中说"状态"，OpenClaw 会自动调用 Portfolio Manager
 ```
 
 ### 5. 使用 CLI
