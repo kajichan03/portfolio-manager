@@ -19,25 +19,29 @@
 ```
 portfolio-manager/
 ├── README.md              # 本文件
+├── AGENTS.md              # AI 助手工作准则
 ├── architecture.md        # 架构设计文档
 ├── iteration-plan.md      # 迭代计划
 ├── progress.md            # 当前进度
-├── config/                # 配置文件
-│   ├── dependencies.py    # 依赖注入配置
-│   └── portfolio.json     # 主配置
-├── core/                  # 核心业务逻辑 (Hexagonal Architecture)
-│   ├── domain/            # 领域模型
-│   ├── adapters/          # 适配器接口和实现
-│   └── services/          # 应用服务
-├── interfaces/            # 用户接口层
-│   ├── cli/               # 命令行接口
-│   └── skill/             # OpenClaw Skill 接口
-├── data/                  # 数据存储
-│   ├── projects.json      # 项目数据
-│   └── agents.json        # Agent 数据
-└── tests/                 # 测试
-    ├── unit/              # 单元测试
-    └── integration/       # 集成测试
+├── decisions.md           # 决策记录
+├── requirements.md        # 需求文档
+└── output/                # 项目产出（可独立交付）
+    ├── config/            # 配置文件
+    │   ├── dependencies.py    # 依赖注入配置
+    │   └── portfolio.json     # 主配置
+    ├── core/              # 核心业务逻辑 (Hexagonal Architecture)
+    │   ├── domain/        # 领域模型
+    │   ├── adapters/      # 适配器接口和实现
+    │   └── services/      # 应用服务
+    ├── interfaces/        # 用户接口层
+    │   ├── cli/           # 命令行接口
+    │   └── skill/         # OpenClaw Skill 接口
+    ├── data/              # 数据存储
+    │   ├── projects.json  # 项目数据
+    │   └── agents.json    # Agent 数据
+    └── tests/             # 测试
+        ├── unit/          # 单元测试
+        └── integration/   # 集成测试
 ```
 
 ## 快速开始
@@ -55,7 +59,7 @@ cd portfolio-manager
 
 ### 2. 配置
 
-编辑 `config/portfolio.json`：
+编辑 `output/config/portfolio.json`：
 
 ```json
 {
@@ -77,26 +81,26 @@ export TELEGRAM_BOT_TOKEN="your_bot_token"
 ### 3. 初始化数据
 
 数据文件已包含初始数据：
-- `data/projects.json` - 项目列表
-- `data/agents.json` - Agent 列表（clawd, pd, dev, test）
+- `output/data/projects.json` - 项目列表
+- `output/data/agents.json` - Agent 列表（clawd, pd, dev, test）
 
 ### 4. 使用 CLI
 
 ```bash
 # 查看 Dashboard 摘要
-python interfaces/cli/main.py dashboard
+python output/interfaces/cli/main.py dashboard
 
 # 查看 Dashboard 详情
-python interfaces/cli/main.py dashboard --format detail
+python output/interfaces/cli/main.py dashboard --format detail
 
 # 列出所有项目
-python interfaces/cli/main.py project list
+python output/interfaces/cli/main.py project list
 
 # 创建新项目
-python interfaces/cli/main.py project create "My New Project" --priority high
+python output/interfaces/cli/main.py project create "My New Project" --priority high
 
 # 分配 Agent 到项目
-python interfaces/cli/main.py project assign portfolio-manager dev
+python output/interfaces/cli/main.py project assign portfolio-manager dev
 ```
 
 ### 5. 使用 Skill
@@ -132,14 +136,14 @@ Bot: ✅ 分配成功!
 
 ```bash
 # 运行所有测试
-python -m unittest discover tests
+python -m unittest discover output/tests
 
 # 运行单元测试
-python -m unittest tests.unit.test_domain
-python -m unittest tests.unit.test_services
+python -m unittest output.tests.unit.test_domain
+python -m unittest output.tests.unit.test_services
 
 # 运行集成测试
-python -m unittest tests.integration.test_repositories
+python -m unittest output.tests.integration.test_repositories
 ```
 
 ## 架构说明
@@ -178,7 +182,7 @@ python -m unittest tests.integration.test_repositories
 
 ## 数据源
 
-- **JSON Repository**: `data/projects.json`, `data/agents.json`
+- **JSON Repository**: `output/data/projects.json`, `output/data/agents.json`
 - **Reminders**: Apple Reminders 列表（通过 remindctl）
 - **Progress**: Bot 项目的 `output/progress.json`
 
