@@ -20,8 +20,6 @@ class ProjectId:
     def __post_init__(self):
         if not self.value:
             raise ValueError("ProjectId cannot be empty")
-        if not all(c.isalnum() or c == '-' for c in self.value):
-            raise ValueError(f"ProjectId must be slug format: {self.value}")
     
     def __str__(self) -> str:
         return self.value

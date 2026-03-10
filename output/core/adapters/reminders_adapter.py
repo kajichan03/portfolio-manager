@@ -7,11 +7,10 @@
 import json
 import subprocess
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List, Union
 
 from output.core.domain import ProjectId, ProjectProgress, ProjectType, Project, DataSource, Priority, ProjectStatus, AgentId
 from output.core.adapters.base import ProgressSource, DataSourceError
-from typing import List
 
 
 class RemindersAdapter(ProgressSource):
@@ -51,26 +50,22 @@ class RemindersAdapter(ProgressSource):
             DataSourceError: 调用 remindctl 失败
         """
         try:
-            list_data = self._fetch_list(str(project_id))
+            tasks = self._fetch_list(str(project_id))
         except DataSourceError:
             return None
         
-        if not list_data:
+        if tasks is None:
             return None
         
-        # 解析任务
-        tasks = list_data.get("tasks", [])
+        # tasks 是任务列表（数组）
         total = len(tasks)
-        completed = sum(1 for t in tasks if t.get("completed", False))
+        completed = sum(1 for t in tasks if t.get("isCompleted", False))
         
         # 计算进度百分比
         percentage = int(completed / total * 100) if total > 0 else 0
         
         # 确定阶段
-        list_type = list_data.get("type", "")
-        if list_type == "operation":
-            phase = "运营中"
-        elif percentage == 0:
+        if percentage == 0:
             phase = "未开始"
         elif percentage == 100:
             phase = "已完成"
@@ -81,7 +76,7 @@ class RemindersAdapter(ProgressSource):
         next_steps = [
             t.get("title", "") 
             for t in tasks 
-            if not t.get("completed", False)
+            if not t.get("isCompleted", False)
         ][:5]  # 只取前 5 个
         
         return ProjectProgress(
@@ -111,14 +106,14 @@ class RemindersAdapter(ProgressSource):
         except DataSourceError:
             return False
     
-    def _fetch_list(self, list_name: str) -> Optional[Dict[str, Any]]:
+    def _fetch_list(self, list_name: str) -> Optional[List[Dict[str, Any]]]:
         """调用 remindctl 获取列表数据
         
         Args:
             list_name: 列表名称
             
         Returns:
-            列表数据字典，不存在返回 None
+            任务列表，不存在返回 None
             
         Raises:
             DataSourceError: 命令执行失败
@@ -206,12 +201,12 @@ class RemindersAdapter(ProgressSource):
             if not list_name:
                 continue
             
-            # 生成项目 ID（slug 格式）
-            project_id = self._generate_slug(list_name)
+            # 使用原始列表名作为项目 ID（以便 get_progress 能正确调用 remindctl）
+            # 同时保存 slug 作为备用标识
             
             # 创建 Project 对象
             project = Project(
-                id=ProjectId(project_id),
+                id=ProjectId(list_name),  # 使用原始名称作为 ID
                 name=list_name,
                 type=ProjectType.OPERATION,  # Reminders 列表默认为运营项目
                 source=DataSource.REMINDERS,
@@ -228,46 +223,48 @@ class RemindersAdapter(ProgressSource):
         
         Returns:
             列表数据字典列表
+        
+        Note: remindctl 0.1.1 有 bug，lists 命令不返回列表名称。
+        我们使用已知的列表名称列表，通过验证列表是否存在来获取数据。
         """
-        try:
-            result = subprocess.run(
-                [self._remindctl_path, "lists", "--json"],
-                capture_output=True,
-                text=True,
-                timeout=10
-            )
-        except Exception as e:
-            raise DataSourceError(f"Failed to fetch lists: {e}", "reminders")
+        # 已知的 Reminders 列表名称（硬编码，因为 remindctl 不返回名称）
+        known_lists = [
+            "工作:从容研究会",
+            "交易:政如农功，日夜思之。",
+            "阅读与学习",
+            "生活；日常采购"
+        ]
         
-        if result.returncode != 0:
-            raise DataSourceError(
-                f"remindctl error: {result.stderr}",
-                "reminders"
-            )
+        lists = []
+        for list_name in known_lists:
+            try:
+                # 尝试获取列表任务，如果成功说明列表存在
+                tasks = self._fetch_list(list_name)
+                if tasks is not None:
+                    lists.append({"title": list_name, "tasks": tasks})
+            except Exception:
+                pass
         
-        try:
-            return json.loads(result.stdout)
-        except json.JSONDecodeError:
-            return []
+        return lists
     
     def _generate_slug(self, name: str) -> str:
         """将名称转换为 slug 格式
         
         示例: "My Project" -> "my-project"
-        对于非 ASCII 字符（如中文），使用原始名称的哈希或转义
+        对于非 ASCII 字符（如中文），保留原始字符
         """
         import re
-        import hashlib
         
-        # 尝试提取 ASCII 字符
-        slug = name.lower()
-        ascii_slug = re.sub(r'[^a-z0-9]+', '-', slug)
-        ascii_slug = ascii_slug.strip('-')
+        # 转换为小写，替换空格和特殊字符为连字符
+        # 保留中文字符和其他非 ASCII 字符
+        slug = re.sub(r'[\s]+', '-', name.lower())
+        slug = re.sub(r'[^\w\u4e00-\u9fff-]', '-', slug)
+        slug = slug.strip('-')
         
-        # 如果结果为空（全是非 ASCII 字符），使用哈希
-        if not ascii_slug:
-            # 使用名称的前 8 个字符的哈希
+        # 确保不为空
+        if not slug:
+            import hashlib
             hash_obj = hashlib.md5(name.encode('utf-8'))
-            ascii_slug = hash_obj.hexdigest()[:8]
+            slug = hash_obj.hexdigest()[:8]
         
-        return ascii_slug
+        return slug
