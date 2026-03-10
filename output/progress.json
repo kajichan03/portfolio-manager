@@ -1,0 +1,87 @@
+{
+  "project_id": "portfolio-manager",
+  "project_name": "Portfolio Manager",
+  "current_phase": "生产环境验证",
+  "progress_percentage": 100,
+  "status": "active",
+  "tasks": [
+    {
+      "id": "I1-001",
+      "name": "领域模型定义",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-002",
+      "name": "适配器抽象接口",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-003",
+      "name": "应用服务实现",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-004",
+      "name": "存储适配器实现",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-005",
+      "name": "数据源适配器实现",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-006",
+      "name": "通知适配器实现",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-007",
+      "name": "CLI 命令实现",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-008",
+      "name": "Skill 指令实现",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "I1-009",
+      "name": "集成测试与文档",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "REMINDERS",
+      "name": "Reminders 自动发现与进度显示",
+      "status": "done",
+      "assignee": "dev"
+    },
+    {
+      "id": "VALIDATION",
+      "name": "生产环境验证",
+      "status": "in_progress",
+      "assignee": "zzbot"
+    }
+  ],
+  "agents": [
+    {"id": "dev", "role": "开发"},
+    {"id": "zzbot", "role": "协调"}
+  ],
+  "blockers": [],
+  "next_steps": [
+    "验证所有项目符合 progress.json Schema",
+    "测试 Dashboard 完整显示所有项目",
+    "验证 Agent 分配和通知功能"
+  ],
+  "updated_at": "2026-03-11T02:53:00+08:00",
+  "updated_by": "dev"
+}
