@@ -199,16 +199,51 @@ class ListHandler:
         
         lines.append(f"{num}. [{project.name}]")
         lines.append(f"   进度: {progress_str} | 状态: {phase} {status_emoji}")
-        
+
         if project.agent_ids:
             agents = ", ".join(str(a) for a in project.agent_ids)
             lines.append(f"   负责: {agents}")
-        
+
         if progress and progress.next_steps:
             lines.append(f"   下一步: {progress.next_steps[0]}")
-        
+
+        # Reminders 项目：显示高优先级任务
+        if project.source.value == "reminders":
+            high_priority_tasks = self._get_reminders_high_priority_tasks(project.id)
+            if high_priority_tasks:
+                lines.append(f"   🔴 高优先级任务:")
+                for task in high_priority_tasks[:3]:
+                    lines.append(f"      • {task}")
+
         lines.append("")
         return lines
+
+    def _get_reminders_high_priority_tasks(self, project_id) -> list:
+        """获取 Reminders 项目的高优先级任务"""
+        try:
+            import subprocess
+            import json
+
+            result = subprocess.run(
+                ["remindctl", "list", str(project_id), "--json"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+
+            if result.returncode != 0:
+                return []
+
+            tasks = json.loads(result.stdout)
+            high_priority = [
+                t.get("title", "")
+                for t in tasks
+                if t.get("priority") == "high" and not t.get("isCompleted", False)
+            ]
+            return high_priority
+
+        except Exception:
+            return []
 
 
 class ProjectDetailHandler:

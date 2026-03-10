@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from output.core.services import SummaryDashboard, DetailDashboard, ProjectWithProgress
-from output.core.domain import Priority
+from output.core.domain import Priority, DataSource
 
 
 class TextFormatter:
@@ -92,52 +92,95 @@ class TextFormatter:
         return "\n".join(lines)
     
     def format_project_item(
-        self, 
-        index: int, 
+        self,
+        index: int,
         item: ProjectWithProgress,
         offset: int = 0
     ) -> List[str]:
         """格式化单个项目项
-        
+
         Args:
             index: 序号
             item: 项目及其进度
             offset: 序号偏移量
-            
+
         Returns:
             格式化后的文本行列表
         """
         project = item.project
         progress = item.progress
-        
+
         lines = []
         num = offset + index
-        
+
         # 基本信息
         status_emoji = "🔴" if progress and progress.is_blocked else "🟢"
         progress_str = f"{progress.percentage}%" if progress else "N/A"
         phase = progress.phase if progress else "未知"
-        
+
         lines.append(f"{num}. [{project.name}]")
         lines.append(f"   进度: {progress_str} | 状态: {phase} {status_emoji}")
-        
+
         # Agent 信息
         if project.agent_ids:
             agents = ", ".join(str(a) for a in project.agent_ids)
             lines.append(f"   负责: {agents}")
-        
+
         # 下一步
         if progress and progress.next_steps:
             next_step = progress.next_steps[0]
             lines.append(f"   下一步: {next_step}")
-        
+
         # 阻塞项
         if progress and progress.blockers:
             lines.append(f"   ⚠️ 阻塞: {progress.blockers[0]}")
-        
+
+        # Reminders 项目：显示高优先级任务
+        if project.source == DataSource.REMINDERS:
+            high_priority_tasks = self._get_reminders_high_priority_tasks(project.id)
+            if high_priority_tasks:
+                lines.append(f"   🔴 高优先级任务:")
+                for task in high_priority_tasks[:3]:  # 最多显示 3 个
+                    lines.append(f"      • {task}")
+
         lines.append("")
-        
+
         return lines
+
+    def _get_reminders_high_priority_tasks(self, project_id) -> List[str]:
+        """获取 Reminders 项目的高优先级任务
+
+        Args:
+            project_id: 项目 ID（Reminders 列表名）
+
+        Returns:
+            高优先级任务标题列表
+        """
+        try:
+            import subprocess
+            import json
+
+            result = subprocess.run(
+                ["remindctl", "list", str(project_id), "--json"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+
+            if result.returncode != 0:
+                return []
+
+            tasks = json.loads(result.stdout)
+            # 筛选高优先级且未完成的任务
+            high_priority = [
+                t.get("title", "")
+                for t in tasks
+                if t.get("priority") == "high" and not t.get("isCompleted", False)
+            ]
+            return high_priority
+
+        except Exception:
+            return []
     
     def _get_priority_emoji(self, priority: str) -> str:
         """获取优先级 emoji"""

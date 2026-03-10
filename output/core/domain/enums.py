@@ -52,6 +52,7 @@ class ProjectStatus(Enum):
     """项目状态"""
     ACTIVE = "active"
     PAUSED = "paused"
+    BLOCKED = "blocked"
     COMPLETED = "completed"
     ARCHIVED = "archived"
 
