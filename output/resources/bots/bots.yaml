@@ -1,0 +1,66 @@
+# Bots 资源列表
+# 维护者: Neal + Clawd Main
+# 维护方式: 手动维护 / Agent 问答交互（未来）
+
+bots:
+  - id: clawd
+    name: Clawd
+    emoji: "☎️"
+    type: "AI Assistant / Main Agent"
+    description: "主控 Agent，负责协调其他 Agents"
+    communication:
+      channel: "Telegram"
+      url: "https://t.me/nealszz_bot"
+    config:
+      local_path: "~/.openclaw/workspace/"
+    status: "active"
+    created_at: "2026-03-10"
+
+  - id: pd
+    name: pd
+    emoji: "🎯"
+    type: "AI Product Manager Agent"
+    description: "产品需求梳理和方案设计"
+    communication:
+      channel: "待配置"
+      url: null
+    config:
+      local_path: "~/projects/pd/"
+    status: "active"
+    created_at: "2026-03-10"
+
+  - id: dev
+    name: Dev
+    emoji: "📟"
+    type: "AI Development Agent"
+    description: "开发实现"
+    communication:
+      channel: "待配置"
+      url: null
+    config:
+      local_path: "~/projects/dev/"
+    status: "active"
+    created_at: "2026-03-10"
+
+  - id: test
+    name: Test
+    emoji: "⚖️"
+    type: "AI Testing / Validation Agent"
+    description: "测试验证"
+    communication:
+      channel: "待配置"
+      url: null
+    config:
+      local_path: "~/projects/test/"
+    status: "active"
+    created_at: "2026-03-10"
+
+# 权限配置
+permissions:
+  bots_list_maintainers:
+    - "Neal"
+    - "clawd"
+  bots_list_editors:
+    - "Neal"
+    - "clawd"
+  default_access: "readonly"

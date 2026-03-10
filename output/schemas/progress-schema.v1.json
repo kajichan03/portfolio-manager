@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Progress Schema",
+  "description": "Portfolio Manager 项目进度数据规范 v1.0",
+  "version": "1.0",
+  "type": "object",
+  "required": [
+    "project_id",
+    "project_name",
+    "current_phase",
+    "progress_percentage",
+    "status",
+    "tasks",
+    "agents",
+    "updated_at"
+  ],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "项目唯一标识"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "项目名称"
+    },
+    "current_phase": {
+      "type": "string",
+      "description": "当前阶段名称",
+      "examples": ["需求澄清", "架构设计", "开发实现", "测试验证"]
+    },
+    "progress_percentage": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "项目进度百分比"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "blocked", "completed"],
+      "description": "项目整体状态"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "任务列表",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "status", "assignee"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "任务唯一标识"
+          },
+          "name": {
+            "type": "string",
+            "description": "任务名称"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["todo", "in_progress", "review", "done", "blocked"],
+            "description": "任务状态"
+          },
+          "assignee": {
+            "type": "string",
+            "description": "负责人 Agent ID 或用户标识"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "任务优先级"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date",
+            "description": "截止日期 (YYYY-MM-DD)"
+          },
+          "description": {
+            "type": "string",
+            "description": "任务描述"
+          }
+        }
+      }
+    },
+    "agents": {
+      "type": "array",
+      "description": "参与项目的 Agent 列表",
+      "items": {
+        "type": "object",
+        "required": ["id", "role"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "role": {
+            "type": "string",
+            "description": "Agent 在项目中的角色",
+            "examples": ["负责", "协助", "Review"]
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "description": "阻塞项列表",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "description": "阻塞原因描述"
+          },
+          "owner": {
+            "type": "string",
+            "description": "负责解决阻塞的人"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "next_steps": {
+      "type": "array",
+      "description": "下一步计划",
+      "items": {
+        "type": "string"
+      }
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "最后更新时间"
+    },
+    "updated_by": {
+      "type": "string",
+      "description": "最后更新者"
+    }
+  }
+}

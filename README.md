@@ -19,26 +19,31 @@
 ```
 portfolio-manager/
 ├── README.md           # 本文件
-├── resources/          # 资源定义
-│   ├── me.md          # 我的信息、能力、限制
-│   └── bots/          # 各 Clawdbot 配置
-├── projects/          # 项目清单
-│   ├── active/        # 进行中
-│   ├── backlog/       # 待开始
-│   └── archived/      # 已归档
-├── tasks/             # 任务追踪
-│   ├── today.md       # 今日任务
-│   ├── week.md        # 本周任务
-│   └── pending.md     # 待处理
-└── metrics/           # 度量指标
-    └── dashboard.md   # 总览看板
+├── AGENTS.md           # AI 助手工作准则
+├── requirements.md     # 需求文档
+├── architecture.md     # 架构设计
+├── output/             # 项目产出（可独立迁移）
+│   ├── resources/      # 资源定义
+│   │   ├── me.md      # 我的信息、能力、限制
+│   │   └── bots/      # 各 Clawdbot 配置
+│   ├── projects/      # 项目清单
+│   │   ├── active/    # 进行中
+│   │   ├── backlog/   # 待开始
+│   │   └── archived/  # 已归档
+│   ├── tasks/         # 任务追踪
+│   │   ├── today.md   # 今日任务
+│   │   ├── week.md    # 本周任务
+│   │   └── pending.md # 待处理
+│   └── metrics/       # 度量指标
+│       └── dashboard.md # 总览看板
+└── ...                 # 其他过程文档
 ```
 
 ## 快速开始
 
-1. 定义资源 → `resources/`
-2. 登记项目 → `projects/active/`
-3. 分解任务 → `tasks/`
+1. 定义资源 → `output/resources/`
+2. 登记项目 → `output/projects/active/`
+3. 分解任务 → `output/tasks/`
 4. 更新状态 → 每日/每周回顾
 
 ---
