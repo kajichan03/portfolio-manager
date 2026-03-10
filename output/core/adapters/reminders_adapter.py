@@ -9,8 +9,9 @@ import subprocess
 from datetime import datetime
 from typing import Optional, Dict, Any
 
-from output.core.domain import ProjectId, ProjectProgress, ProjectType
+from output.core.domain import ProjectId, ProjectProgress, ProjectType, Project, DataSource, Priority, ProjectStatus, AgentId
 from output.core.adapters.base import ProgressSource, DataSourceError
+from typing import List
 
 
 class RemindersAdapter(ProgressSource):
@@ -187,3 +188,86 @@ class RemindersAdapter(ProgressSource):
             return [l.get("name", "") for l in lists if l.get("name")]
         except json.JSONDecodeError:
             return []
+    
+    def list_projects(self) -> List[Project]:
+        """从 Reminders 获取所有列表作为项目
+        
+        将每个 Reminders 列表转换为一个 Project 对象，
+        用于 Dashboard 自动发现。
+        
+        Returns:
+            Project 列表
+        """
+        lists = self._fetch_all_lists()
+        projects = []
+        
+        for list_data in lists:
+            list_name = list_data.get("title", "")
+            if not list_name:
+                continue
+            
+            # 生成项目 ID（slug 格式）
+            project_id = self._generate_slug(list_name)
+            
+            # 创建 Project 对象
+            project = Project(
+                id=ProjectId(project_id),
+                name=list_name,
+                type=ProjectType.OPERATION,  # Reminders 列表默认为运营项目
+                source=DataSource.REMINDERS,
+                priority=Priority.MEDIUM,  # 默认中优先级
+                status=ProjectStatus.ACTIVE,
+                agent_ids=frozenset([AgentId("neal")]),  # 用户的项目
+            )
+            projects.append(project)
+        
+        return projects
+    
+    def _fetch_all_lists(self) -> List[Dict[str, Any]]:
+        """获取所有 Reminders 列表数据
+        
+        Returns:
+            列表数据字典列表
+        """
+        try:
+            result = subprocess.run(
+                [self._remindctl_path, "lists", "--json"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+        except Exception as e:
+            raise DataSourceError(f"Failed to fetch lists: {e}", "reminders")
+        
+        if result.returncode != 0:
+            raise DataSourceError(
+                f"remindctl error: {result.stderr}",
+                "reminders"
+            )
+        
+        try:
+            return json.loads(result.stdout)
+        except json.JSONDecodeError:
+            return []
+    
+    def _generate_slug(self, name: str) -> str:
+        """将名称转换为 slug 格式
+        
+        示例: "My Project" -> "my-project"
+        对于非 ASCII 字符（如中文），使用原始名称的哈希或转义
+        """
+        import re
+        import hashlib
+        
+        # 尝试提取 ASCII 字符
+        slug = name.lower()
+        ascii_slug = re.sub(r'[^a-z0-9]+', '-', slug)
+        ascii_slug = ascii_slug.strip('-')
+        
+        # 如果结果为空（全是非 ASCII 字符），使用哈希
+        if not ascii_slug:
+            # 使用名称的前 8 个字符的哈希
+            hash_obj = hashlib.md5(name.encode('utf-8'))
+            ascii_slug = hash_obj.hexdigest()[:8]
+        
+        return ascii_slug

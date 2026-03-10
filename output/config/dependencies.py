@@ -98,9 +98,12 @@ class ServiceContainer:
         self._project_repo = JsonProjectRepository(config.data_dir)
         self._agent_repo = JsonAgentRepository(config.data_dir)
         
+        # 创建 Reminders Adapter（用于自动发现）
+        self._reminders_adapter = RemindersAdapter(config.remindctl_path)
+        
         # 创建 Progress Sources
         self._progress_sources = [
-            RemindersAdapter(config.remindctl_path),
+            self._reminders_adapter,
             ProgressAdapter(config.projects_root),
         ]
         
@@ -123,7 +126,8 @@ class ServiceContainer:
         
         self.dashboard = DashboardService(
             project_service=self.project,
-            progress_sources=self._progress_sources
+            progress_sources=self._progress_sources,
+            reminders_adapter=self._reminders_adapter
         )
         
         self.agent = AgentService(

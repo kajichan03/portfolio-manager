@@ -14,6 +14,7 @@ from output.core.domain import (
     Priority, ProjectStatus
 )
 from output.core.adapters.base import ProjectRepository, ProgressSource
+from output.core.adapters.reminders_adapter import RemindersAdapter
 from .project_service import ProjectService
 
 
@@ -57,10 +58,12 @@ class DashboardService:
     def __init__(
         self,
         project_service: ProjectService,
-        progress_sources: List[ProgressSource]
+        progress_sources: List[ProgressSource],
+        reminders_adapter: Optional[RemindersAdapter] = None
     ):
         self._project_service = project_service
         self._progress_sources = progress_sources
+        self._reminders_adapter = reminders_adapter
     
     def generate_summary(self) -> SummaryDashboard:
         """生成摘要 Dashboard
@@ -71,19 +74,30 @@ class DashboardService:
         Returns:
             SummaryDashboard 数据对象
         """
-        # 获取所有项目
-        projects = self._project_service.list_projects()
+        # 获取 Bot 项目
+        bot_projects = self._project_service.list_projects()
+        
+        # 获取 Reminders 项目（自动发现）
+        reminders_projects = []
+        if self._reminders_adapter:
+            try:
+                reminders_projects = self._reminders_adapter.list_projects()
+            except Exception:
+                pass  # Reminders 不可用时忽略
+        
+        # 合并项目列表
+        all_projects = list(bot_projects) + reminders_projects
         
         # 并行获取所有项目进度
-        progresses = self._fetch_progresses([p.id for p in projects])
+        progresses = self._fetch_progresses([p.id for p in all_projects])
         
         # 统计
-        total = len(projects)
+        total = len(all_projects)
         active = 0
         blocked = 0
         attention_needed = []
         
-        for project in projects:
+        for project in all_projects:
             progress = progresses.get(project.id)
             
             # 活跃项目：状态为 active 且未被阻塞
@@ -123,16 +137,27 @@ class DashboardService:
         Returns:
             DetailDashboard 数据对象
         """
-        # 获取所有项目
-        projects = self._project_service.list_projects()
+        # 获取 Bot 项目
+        bot_projects = self._project_service.list_projects()
+        
+        # 获取 Reminders 项目（自动发现）
+        reminders_projects = []
+        if self._reminders_adapter:
+            try:
+                reminders_projects = self._reminders_adapter.list_projects()
+            except Exception:
+                pass
+        
+        # 合并项目列表
+        all_projects = list(bot_projects) + reminders_projects
         
         # 获取所有进度
-        progresses = self._fetch_progresses([p.id for p in projects])
+        progresses = self._fetch_progresses([p.id for p in all_projects])
         
         # 按优先级分组
         by_priority: Dict[Priority, List[ProjectWithProgress]] = defaultdict(list)
         
-        for project in projects:
+        for project in all_projects:
             # 应用过滤器
             if priority_filter and project.priority != priority_filter:
                 continue
