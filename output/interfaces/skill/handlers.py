@@ -100,7 +100,7 @@ class StatusHandler:
     def __init__(self, dashboard_service: DashboardService):
         self._dashboard = dashboard_service
     
-    def handle(self) -> str:
+    def handle(self, *args) -> str:
         """处理状态查询"""
         try:
             summary = self._dashboard.generate_summary()
@@ -141,7 +141,7 @@ class ListHandler:
     def __init__(self, dashboard_service: DashboardService):
         self._dashboard = dashboard_service
     
-    def handle(self) -> str:
+    def handle(self, *args) -> str:
         """处理详情查询"""
         try:
             detail = self._dashboard.generate_detail()
