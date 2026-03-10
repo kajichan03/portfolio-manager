@@ -84,9 +84,31 @@ export TELEGRAM_BOT_TOKEN="your_bot_token"
 - `output/data/projects.json` - 项目列表
 - `output/data/agents.json` - Agent 列表（clawd, pd, dev, test）
 
-### 4. 使用 CLI
+### 4. 主 Agent 部署
+
+Portfolio Manager 作为主 Agent (Clawd) 的 Skill 运行：
 
 ```bash
+# 1. 克隆代码
+git clone https://github.com/kajichan03/portfolio-manager.git
+
+# 2. 部署到主 Agent workspace
+ln -s ~/projects/portfolio-manager/output ~/.openclaw/workspace/output
+
+# 3. 创建 Skill 入口
+cp ~/projects/portfolio-manager/output/docs/skill.py ~/.openclaw/workspace/
+cp ~/projects/portfolio-manager/output/docs/SKILL.md ~/.openclaw/workspace/
+
+# 4. 配置
+cd ~/.openclaw/workspace
+python skill.py "状态"
+```
+
+### 5. 使用 CLI
+
+```bash
+cd ~/.openclaw/workspace
+
 # 查看 Dashboard 摘要
 python output/interfaces/cli/main.py dashboard
 
@@ -103,7 +125,7 @@ python output/interfaces/cli/main.py project create "My New Project" --priority 
 python output/interfaces/cli/main.py project assign portfolio-manager dev
 ```
 
-### 5. 使用 Skill
+### 6. 使用 Skill
 
 在 OpenClaw 中通过对话使用：
 
@@ -132,9 +154,11 @@ Bot: ✅ 项目创建成功!
 Bot: ✅ 分配成功!
 ```
 
-### 6. 运行测试
+### 7. 运行测试
 
 ```bash
+cd ~/.openclaw/workspace
+
 # 运行所有测试
 python -m unittest discover output/tests
 
