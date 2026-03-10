@@ -1,114 +1,89 @@
 # Progress
 
-> **最后更新**: 2026-03-10 01:24 GMT+8
+> **最后更新**: 2026-03-11 01:30 GMT+8
 
 ---
 
 ## 📊 当前状态
-- **当前阶段**: 产品设计阶段 ✅ 完成
-- **整体进度**: 50%（需求已确认，产品方案已输出）
-- **当前聚焦**: 技术架构设计与实现准备
+- **当前迭代**: Iteration 1 - MVP 🟢
+- **整体进度**: 100%（所有任务完成）
+- **当前聚焦**: 迭代完成总结
 - **阻塞问题**: 无
 
 ---
 
-## 📋 最近完成（倒序）
+## 📋 最近完成（倒序，只保留最近 3 条）
 
-### 2026-03-10 - PRD 输出完成
-- **关键成果**: 
-  - 创建 `output_product_doc.md` 产品需求文档
-  - 包含产品概述、需求描述、产品方案、Dashboard 设计、数据模型、验收标准
-  - 产品设计阶段完成
-- **当前阶段**: 产品设计阶段 ✅ 完成
+### 2026-03-11 - I1-009 完成: 集成测试与文档
+- **关键成果**:
+  - 创建 `tests/unit/test_domain.py`: 领域模型单元测试（19 个测试通过）
+  - 创建 `tests/unit/test_services.py`: 应用服务单元测试（使用 Mock）
+  - 创建 `tests/integration/test_repositories.py`: Repository 集成测试（7 个测试通过）
+  - 所有测试通过验证
+- **当前阶段**: Iteration 1 - Phase 6 ✅ 完成
 - **状态**: ✅ 完成
+- 🔗 详细规划见 iteration-plan.md#I1-009
 
-### 2026-03-10 - Schema 契约设计完成
-- **关键成果**: 
-  - 完成"事前预防"策略设计（双格式输出 + Schema 契约）
-  - 创建 `output/schemas/progress-schema.v1.json` 规范
-  - 创建 `output/docs/skill-integration.md` 集成指南
-  - 明确项目管理 Skill 的修改清单（5 项任务）
-- **当前阶段**: 产品设计阶段（等待架构设计）
+### 2026-03-11 - I1-008 完成: Skill 指令实现
+- **关键成果**:
+  - 实现 Skill 指令处理器（状态、详情、项目、分配等）
+  - 架构合规验证通过（不依赖 CLI）
+- **当前阶段**: Iteration 1 - Phase 5 ✅ 完成
 - **状态**: ✅ 完成
+- 🔗 详细规划见 iteration-plan.md#I1-008
 
-### 2026-03-10 - 产品形态确定：Skill + CLI 混合架构
-- **关键成果**: 
-  - 完成实现方案选型讨论
-  - 确定 **Skill + CLI 混合架构**：Skill 负责对话交互，CLI 负责数据操作
-  - 明确组件边界和职责分离
-  - 更新 Project_Goal.md 和 decisions.md
-- **当前阶段**: 产品设计阶段（架构细化）
+### 2026-03-11 - I1-007 完成: CLI 命令实现
+- **关键成果**:
+  - 实现 CLI 命令（dashboard、project）
+  - 实现文本格式化器
+- **当前阶段**: Iteration 1 - Phase 5 ✅ 完成
 - **状态**: ✅ 完成
-
-### 2026-03-10 - 需求澄清完成，创建 Project_Goal.md
-- **关键成果**: 
-  - 所有待澄清问题已确认
-  - 创建 Project_Goal.md，整合项目背景、目标、核心需求、产品设计思路
-  - 明确产品形态、模块、交互流程
-- **当前阶段**: 产品设计阶段
-- **状态**: ✅ 完成
-
-### 2026-03-10 - 目录结构优化
-- **关键成果**: 完成目录结构重组，基础设施与项目产出分离
-- **动作**: 创建 `output/` 目录，迁移 `projects/`、`tasks/`、`resources/`、`metrics/`
-- **决策记录**: 见 [decisions.md](./decisions.md) "目录结构重组"
-- **状态**: ✅ 完成
-
-### 2026-03-10 - 需求讨论进展
-- **关键成果**: 确认了 4 个核心决策
-- **决策记录**:
-  1. Apple Reminders: 双向同步，作为信息来源和更新目标
-  2. Bot 项目同步: 从各项目 progress.md 聚合（前提：使用 project-management-engineering skill）
-  3. 任务粒度: 待定，由用户设置规则
-  4. 优先级: 用户手动标记，需全局统一字段 scheme
-- **待补充**:
-  - [ ] Bots 完整列表
-  - [ ] 如何知道 bot 跟进项目的地址？
-- **状态**: 🟡 进行中
-
-### 2026-03-10 - 项目初始化
-- **关键成果**: Portfolio Manager 项目骨架建立并同步到 GitHub
-- **范围**: 目录结构、基础文档、GitHub 仓库
-- **仓库**: https://github.com/kajichan03/portfolio-manager
-- **状态**: ✅ 完成
+- 🔗 详细规划见 iteration-plan.md#I1-007
 
 ---
 
-## 🎯 下一步
+## ✅ 迭代完成标准检查
 
-1. **技术架构设计**（当前阶段）
-   - CLI 模块架构设计
-   - Skill 指令设计
-   - 数据流详细设计
-
-2. **实现 MVP**（待开始）
-   - CLI: Reminders API 集成 + progress.json 解析 + Dashboard 生成
-   - Skill: 基础对话指令实现
-   - 集成测试
+- [x] 所有 9 个任务完成并通过测试
+- [x] Dashboard 可正常显示（通过 Service 生成）
+- [x] CLI 可独立运行（通过 Service Container）
+- [x] Skill 直接调用 Service（不经过 CLI）
+- [x] 文档完整（architecture.md, iteration-plan.md, progress.md）
 
 ---
 
-## ⚠️ 当前判断
+## 📊 测试统计
 
-- **需求已确认**: 所有需求已澄清，PRD 已输出
-- **设计完成**: 产品方案、数据模型、Dashboard 设计已完成
-- **准备实现**: 进入技术架构设计和 MVP 实现阶段
+| 测试类型 | 数量 | 状态 |
+|----------|------|------|
+| 单元测试 (Domain) | 19 | ✅ 通过 |
+| 单元测试 (Services) | 3 | ✅ 通过 |
+| 集成测试 (Repositories) | 7 | ✅ 通过 |
+| **总计** | **29** | **✅ 全部通过** |
 
 ---
 
 ## 📌 已完成清单
 
-### 需求阶段 ✅
-- [x] 任务粒度规则：Reminders 列表 = 项目
-- [x] 优先级 scheme：high/medium/low
-- [x] Bots 列表：4 个 Agents
-- [x] 项目范围：所有项目（专门 + 日常运营）
-- [x] 度量指标：不过度设计
-- [x] 集成需求：Telegram + iMessage
+### Phase 1-6: 全部完成 ✅
+- [x] I1-001: 领域模型定义
+- [x] I1-002: 适配器抽象接口
+- [x] I1-003: 应用服务实现
+- [x] I1-004: 存储适配器实现
+- [x] I1-005: 数据源适配器实现
+- [x] I1-006: 通知适配器实现
+- [x] I1-007: CLI 命令实现
+- [x] I1-008: Skill 指令实现
+- [x] I1-009: 依赖注入 + 集成测试
 
-### 设计阶段 ✅
-- [x] 产品形态：Skill + CLI 混合架构
-- [x] Dashboard 设计：摘要/详情模式
-- [x] 数据模型：项目/任务/Agent 实体
-- [x] Schema 契约：progress.json v1.0
-- [x] PRD 输出：output_product_doc.md
+---
+
+## 🎉 Iteration 1 完成
+
+**MVP 版本已实现**：
+- Hexagonal Architecture 架构
+- Domain + Services + Adapters + Interfaces 完整分层
+- CLI 和 Skill 平等调用 Service
+- 29 个测试全部通过
+
+**下一步**: 部署和实际使用验证

@@ -1,0 +1,8 @@
+{
+  "data_dir": "./data",
+  "projects_root": "~/projects",
+  "remindctl_path": "remindctl",
+  "telegram": {
+    "bot_token": "${TELEGRAM_BOT_TOKEN}"
+  }
+}

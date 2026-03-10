@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "projects": [
+    {
+      "id": "portfolio-manager",
+      "name": "Portfolio Manager",
+      "type": "dedicated",
+      "source": "bot_project",
+      "priority": "high",
+      "status": "active",
+      "local_path": "~/projects/portfolio-manager",
+      "github_url": "https://github.com/kajichan03/portfolio-manager",
+      "agent_ids": ["pd", "dev"],
+      "created_at": "2026-03-10T00:00:00+08:00",
+      "updated_at": "2026-03-11T00:00:00+08:00"
+    }
+  ]
+}

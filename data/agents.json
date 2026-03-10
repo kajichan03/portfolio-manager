@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "agents": [
+    {
+      "id": "clawd",
+      "name": "Clawd",
+      "emoji": "☎️",
+      "role": "coordinator",
+      "communication": {
+        "channel": "telegram",
+        "config": {
+          "chat_id": "${TELEGRAM_CHAT_ID}"
+        }
+      },
+      "config_path": "~/.openclaw/workspace-dev",
+      "status": "active"
+    },
+    {
+      "id": "pd",
+      "name": "pd",
+      "emoji": "🎯",
+      "role": "product",
+      "communication": {
+        "channel": "telegram",
+        "config": {
+          "chat_id": "${TELEGRAM_CHAT_ID_PD}"
+        }
+      },
+      "config_path": "~/.openclaw/workspace-pd",
+      "status": "active"
+    },
+    {
+      "id": "dev",
+      "name": "Dev",
+      "emoji": "📟",
+      "role": "developer",
+      "communication": {
+        "channel": "telegram",
+        "config": {
+          "chat_id": "${TELEGRAM_CHAT_ID_DEV}"
+        }
+      },
+      "config_path": "~/.openclaw/workspace-dev",
+      "status": "active"
+    },
+    {
+      "id": "test",
+      "name": "Test",
+      "emoji": "⚖️",
+      "role": "qa",
+      "communication": {
+        "channel": "telegram",
+        "config": {
+          "chat_id": "${TELEGRAM_CHAT_ID_TEST}"
+        }
+      },
+      "config_path": "~/.openclaw/workspace-test",
+      "status": "active"
+    }
+  ]
+}
