@@ -232,7 +232,8 @@ class RemindersAdapter(ProgressSource):
             "工作:从容研究会",
             "交易:政如农功，日夜思之。",
             "阅读与学习",
-            "生活；日常采购"
+            "生活；日常采购",
+            "PMAuto"
         ]
         
         lists = []
