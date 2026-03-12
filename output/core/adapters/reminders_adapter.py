@@ -224,22 +224,16 @@ class RemindersAdapter(ProgressSource):
         Returns:
             列表数据字典列表
         
-        Note: remindctl 0.1.1 有 bug，lists 命令不返回列表名称。
-        我们使用已知的列表名称列表，通过验证列表是否存在来获取数据。
+        使用 remindctl list --plain 获取所有列表名称，
+        然后动态获取每个列表的任务。
         """
-        # 已知的 Reminders 列表名称（硬编码，因为 remindctl 不返回名称）
-        known_lists = [
-            "工作:从容研究会",
-            "交易:政如农功，日夜思之。",
-            "阅读与学习",
-            "生活；日常采购",
-            "PMAuto"
-        ]
+        # 获取所有列表名称
+        list_names = self._fetch_list_names()
         
         lists = []
-        for list_name in known_lists:
+        for list_name in list_names:
             try:
-                # 尝试获取列表任务，如果成功说明列表存在
+                # 获取列表任务
                 tasks = self._fetch_list(list_name)
                 if tasks is not None:
                     lists.append({"title": list_name, "tasks": tasks})
@@ -247,6 +241,41 @@ class RemindersAdapter(ProgressSource):
                 pass
         
         return lists
+    
+    def _fetch_list_names(self) -> List[str]:
+        """获取所有 Reminders 列表名称
+        
+        使用 remindctl list --plain 获取列表名称。
+        格式: 列表名\t任务数\t逾期数
+        
+        Returns:
+            列表名称列表
+        """
+        try:
+            result = subprocess.run(
+                [self._remindctl_path, "list", "--plain"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+        except Exception as e:
+            raise DataSourceError(f"Failed to fetch list names: {e}", "reminders")
+        
+        if result.returncode != 0:
+            raise DataSourceError(
+                f"remindctl error: {result.stderr}",
+                "reminders"
+            )
+        
+        names = []
+        for line in result.stdout.strip().split("\n"):
+            if line and "\t" in line:
+                # 格式: 列表名\t任务数\t逾期数
+                parts = line.split("\t")
+                if parts[0]:
+                    names.append(parts[0])
+        
+        return names
     
     def _generate_slug(self, name: str) -> str:
         """将名称转换为 slug 格式
