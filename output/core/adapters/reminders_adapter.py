@@ -180,7 +180,7 @@ class RemindersAdapter(ProgressSource):
         
         try:
             lists = json.loads(result.stdout)
-            return [l.get("name", "") for l in lists if l.get("name")]
+            return [l.get("title", "") for l in lists if l.get("title")]
         except json.JSONDecodeError:
             return []
     
