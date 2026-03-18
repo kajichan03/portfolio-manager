@@ -7,7 +7,7 @@
       "type": "dedicated",
       "source": "bot_project",
       "priority": "high",
-      "status": "active",
+      "status": "completed",
       "local_path": "~/projects/portfolio-manager",
       "github_url": "https://github.com/kajichan03/portfolio-manager",
       "agent_ids": [
@@ -15,7 +15,7 @@
         "dev"
       ],
       "created_at": "2026-03-10T00:00:00+08:00",
-      "updated_at": "2026-03-11T00:00:00+08:00"
+      "updated_at": "2026-03-17T22:00:00+08:00"
     },
     {
       "id": "trading-skill-system",
@@ -29,6 +29,19 @@
       "agent_ids": [],
       "created_at": "2026-03-11T02:44:58.444450",
       "updated_at": "2026-03-11T02:46:21.746683"
+    },
+    {
+      "id": "trading-skill-v2",
+      "name": "Trading Skill V2",
+      "type": "dedicated",
+      "source": "bot_project",
+      "priority": "high",
+      "status": "active",
+      "local_path": "~/projects/trading-skill-v2",
+      "github_url": null,
+      "agent_ids": [],
+      "created_at": "2026-03-17T22:15:23.119807",
+      "updated_at": "2026-03-17T22:15:23.119808"
     }
   ]
 }

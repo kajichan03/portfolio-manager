@@ -1,7 +1,7 @@
 {
-  "data_dir": "output/data",
-  "projects_root": "~/projects",
-  "remindctl_path": "remindctl",
+  "data_dir": "/Users/nealchan/.openclaw/workspace/output/data",
+  "projects_root": "/Users/nealchan/projects",
+  "remindctl_path": "/opt/homebrew/bin/remindctl",
   "telegram": {
     "bot_token": "${TELEGRAM_BOT_TOKEN}"
   }
